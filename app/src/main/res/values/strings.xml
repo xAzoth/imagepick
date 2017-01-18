@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">imagepick</string>
+    <string name="desc">Capture image holder</string>
 </resources>

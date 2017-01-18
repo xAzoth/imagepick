@@ -10,6 +10,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -20,17 +21,19 @@ import java.util.Date;
 public class ImagePickActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE  =1;
     private String mCurrentPhotoPath;
-    private ImageView mImageView;
+    private Button takePictureButton;
+    private ImageView imageView;
+    private Uri photoURI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_pick);
-
-       // imageView = (ImageView) findViewById(R.id.result);
+        takePictureButton = (Button) findViewById(R.id.button_image);
+        imageView = (ImageView) findViewById(R.id.captured_photo);
     }
 
-    public void onClick (View view){
+    public void takePicture (View view){
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null){
@@ -43,7 +46,7 @@ public class ImagePickActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider", photoFile);
+                photoURI = FileProvider.getUriForFile(this,"com.example.android.fileprovider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,photoURI);
                 startActivityForResult(takePictureIntent,REQUEST_IMAGE_CAPTURE);
             }
@@ -53,9 +56,7 @@ public class ImagePickActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK){
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            mImageView.setImageBitmap(imageBitmap);
+            imageView.setImageURI(photoURI);
         }
     }
 
